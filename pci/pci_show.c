@@ -4,7 +4,7 @@
 #include <linux/kernel.h>
 
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("Read PCI vendor device class example");
+MODULE_DESCRIPTION("Read PCI vendor device example");
 MODULE_AUTHOR("Vincent Hu");
 
 static int __init pci_show_init(void)
@@ -18,6 +18,16 @@ static int __init pci_show_init(void)
 				pdev->vendor,
 				pdev->device,
 				pdev->class);
+
+		for (int i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
+			struct resource *res = &pdev->resource[i];
+
+			if (!res->flags || !res->start)
+				continue;
+
+			pci_info(pdev, "BAR %d %pR\n", i , res);
+		}
+
 	}
 	printk(KERN_INFO "PCI bus scan finished\n");
 
